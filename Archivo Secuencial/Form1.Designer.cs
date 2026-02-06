@@ -30,12 +30,14 @@
         {
             BtnCrearArchivo = new Button();
             BtnMoverArchivo = new Button();
-            textBoxDatos = new TextBox();
             labelDatos = new Label();
             btnEliminar = new Button();
             btnCopiar = new Button();
             btnVerPropiedades = new Button();
-            txtPropiedades = new TextBox();
+            dgvDatos = new DataGridView();
+            dgvPropiedades = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPropiedades).BeginInit();
             SuspendLayout();
             // 
             // BtnCrearArchivo
@@ -57,14 +59,6 @@
             BtnMoverArchivo.Text = "Mover Archivo";
             BtnMoverArchivo.UseVisualStyleBackColor = true;
             BtnMoverArchivo.Click += BtnMoverArchivo_Click;
-            // 
-            // textBoxDatos
-            // 
-            textBoxDatos.Location = new Point(12, 35);
-            textBoxDatos.Multiline = true;
-            textBoxDatos.Name = "textBoxDatos";
-            textBoxDatos.Size = new Size(776, 380);
-            textBoxDatos.TabIndex = 1;
             // 
             // labelDatos
             // 
@@ -105,30 +99,42 @@
             btnVerPropiedades.UseVisualStyleBackColor = true;
             btnVerPropiedades.Click += btnVerPropiedades_Click;
             // 
-            // txtPropiedades
+            // dgvDatos
             // 
-            txtPropiedades.Location = new Point(825, 35);
-            txtPropiedades.Multiline = true;
-            txtPropiedades.Name = "txtPropiedades";
-            txtPropiedades.Size = new Size(380, 380);
-            txtPropiedades.TabIndex = 7;
+            dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDatos.Location = new Point(12, 35);
+            dgvDatos.Name = "dgvDatos";
+            dgvDatos.RowHeadersWidth = 51;
+            dgvDatos.Size = new Size(868, 380);
+            dgvDatos.TabIndex = 8;
+            // 
+            // dgvPropiedades
+            // 
+            dgvPropiedades.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvPropiedades.Location = new Point(930, 35);
+            dgvPropiedades.Name = "dgvPropiedades";
+            dgvPropiedades.RowHeadersWidth = 51;
+            dgvPropiedades.Size = new Size(484, 380);
+            dgvPropiedades.TabIndex = 9;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1352, 621);
-            Controls.Add(txtPropiedades);
+            ClientSize = new Size(1726, 724);
+            Controls.Add(dgvPropiedades);
+            Controls.Add(dgvDatos);
             Controls.Add(btnVerPropiedades);
             Controls.Add(btnCopiar);
             Controls.Add(btnEliminar);
             Controls.Add(BtnMoverArchivo);
             Controls.Add(BtnCrearArchivo);
-            Controls.Add(textBoxDatos);
             Controls.Add(labelDatos);
             Name = "Form1";
             Text = "Archivos Secuenciales";
             Load += Form1_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPropiedades).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -137,11 +143,11 @@
 
         private Button BtnCrearArchivo;
         private Button BtnMoverArchivo;
-        private TextBox textBoxDatos;
         private Label labelDatos;
         private Button btnEliminar;
         private Button btnCopiar;
         private Button btnVerPropiedades;
-        private TextBox txtPropiedades;
+        private DataGridView dgvDatos;
+        private DataGridView dgvPropiedades;
     }
 }

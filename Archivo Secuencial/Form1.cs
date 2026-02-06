@@ -11,19 +11,42 @@ namespace Archivo_Secuencial
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            ConfigurarDataGridViews();
+        }
 
+        private void ConfigurarDataGridViews()
+        {
+            // Configurar dgvDatos
+            dgvDatos.AllowUserToAddRows = true;
+            dgvDatos.AllowUserToDeleteRows = true;
+            dgvDatos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            
+            if (dgvDatos.Columns.Count == 0)
+            {
+                dgvDatos.Columns.Add("Datos", "Datos");
+            }
+
+            // Configurar dgvPropiedades
+            dgvPropiedades.AllowUserToAddRows = false;
+            dgvPropiedades.AllowUserToDeleteRows = false;
+            dgvPropiedades.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            
+            if (dgvPropiedades.Columns.Count == 0)
+            {
+                dgvPropiedades.Columns.Add("Propiedad", "Propiedad");
+                dgvPropiedades.Columns.Add("Valor", "Valor");
+            }
         }
 
         private void CrearArchivo()
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(textBoxDatos.Text))
+                if (dgvDatos.Rows.Count == 0 || string.IsNullOrWhiteSpace(dgvDatos.Rows[0].Cells[0].Value?.ToString()))
                 {
                     MessageBox.Show("Por favor, escriba algo antes de crear el archivo.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-
 
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                 saveFileDialog1.Filter = "Archivos de texto (*.txt)|*.txt|Archivos CSV (*.csv)|*.csv|Archivos de datos (*.dat)|*.dat|Todos los archivos (*.*)|*.*";
@@ -41,15 +64,29 @@ namespace Archivo_Secuencial
                         }
                     }
 
-                    File.WriteAllText(rutaArchivo, textBoxDatos.Text);
+                    string contenido = ObtenerContenidoDesdeDataGridView();
+                    File.WriteAllText(rutaArchivo, contenido);
                     MessageBox.Show("Archivo creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    textBoxDatos.Clear();
+                    dgvDatos.Rows.Clear();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al crear el archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private string ObtenerContenidoDesdeDataGridView()
+        {
+            string contenido = "";
+            foreach (DataGridViewRow row in dgvDatos.Rows)
+            {
+                if (!row.IsNewRow)
+                {
+                    contenido += row.Cells[0].Value?.ToString() + Environment.NewLine;
+                }
+            }
+            return contenido;
         }
 
         private void MoverArchivo()
@@ -92,9 +129,6 @@ namespace Archivo_Secuencial
             }
         }
 
-
-
-
         private void BtnCrearArchivo_click(object sender, EventArgs e)
         {
             CrearArchivo();
@@ -120,7 +154,7 @@ namespace Archivo_Secuencial
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 string filepath = ofd.FileName;
-                DialogResult resultado = MessageBox.Show(" ¿Desea eliminarlo?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult resultado = MessageBox.Show("¿Desea eliminarlo?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (resultado == DialogResult.No)
                 {
                     return false;
@@ -131,7 +165,6 @@ namespace Archivo_Secuencial
 
             return true;
         }
-
 
         private void CopiarArchivo()
         {
@@ -169,14 +202,13 @@ namespace Archivo_Secuencial
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al mover el archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al copiar el archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnCopiar_Click(object sender, EventArgs e)
         {
             CopiarArchivo();
-
         }
 
         private void btnVerPropiedades_Click(object sender, EventArgs e)
@@ -187,16 +219,19 @@ namespace Archivo_Secuencial
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 string rutaOrigen = openFileDialog1.FileName;
-                
-                FileInfo info = new FileInfo(rutaOrigen);
-                
-               txtPropiedades.Text = info.Length + " bytes " + Environment.NewLine;
-               txtPropiedades.Text += " Nombre " + info.Name +Environment.NewLine ;
-               txtPropiedades.Text += " fecha de creacion " + info.CreationTime.ToString() + Environment.NewLine;
-               txtPropiedades.Text += " extension " + info.Extension + Environment.NewLine;
-               txtPropiedades.Text += " Ultimo acceso " + info.LastAccessTime.ToString() + Environment.NewLine;
-               txtPropiedades.Text += " Ultima modificacion " + info.LastWriteTime + Environment.NewLine;
 
+                FileInfo info = new FileInfo(rutaOrigen);
+
+                dgvPropiedades.Rows.Clear();
+                dgvPropiedades.Rows.Add("Tamaño", info.Length + " bytes");
+                dgvPropiedades.Rows.Add("Nombre", info.Name);
+                dgvPropiedades.Rows.Add("Fecha de creación", info.CreationTime.ToString());
+                dgvPropiedades.Rows.Add("Extensión", info.Extension);
+                dgvPropiedades.Rows.Add("Último acceso", info.LastAccessTime.ToString());
+                dgvPropiedades.Rows.Add("Última modificación", info.LastWriteTime.ToString());
+                dgvPropiedades.Rows.Add("Atributos", info.Attributes.ToString());
+                dgvPropiedades.Rows.Add("Ubicación", info.FullName);
+                dgvPropiedades.Rows.Add("Carpeta contenedora", info.DirectoryName);
             }
         }
     }
